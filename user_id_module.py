@@ -1,6 +1,5 @@
-from aiogram import types, Dispatcher
+from aiogram import types
 from aiogram.dispatcher import Dispatcher
-from aiogram.utils import executor
 
 # Глобальная переменная для хранения диспетчера
 dp: Dispatcher = None
@@ -10,8 +9,14 @@ def setup_dispatcher(dispatcher: Dispatcher):
     global dp
     dp = dispatcher
 
+    # Проверяем, что диспетчер установлен корректно
+    if dp is None:
+        raise ValueError("Dispatcher is not set properly")
+
+    # Регистрация обработчика внутри функции установки
+    dp.register_message_handler(id_command, regexp=r'\.id @(\w+)')
+
 # Обработчик для команды .id @username
-@dp.message_handler(regexp=r'\.id @(\w+)')
 async def id_command(message: types.Message):
     username = message.text.split('@')[1]  # Получаем юзернейм из команды
     try:
@@ -22,7 +27,6 @@ async def id_command(message: types.Message):
         await message.reply(f"Не удалось найти пользователя @{username}. Ошибка: {e}")
 
 # Функция для завершения работы модуля (если требуется)
-async def on_shutdown(dp: Dispatcher):
+async def on_shutdown():
     pass
-
 
