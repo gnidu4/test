@@ -1,5 +1,6 @@
 from aiogram import types
 from aiogram.dispatcher import Dispatcher
+from aiogram.dispatcher.filters import Text
 
 # Глобальная переменная для хранения диспетчера
 dp: Dispatcher = None
@@ -13,8 +14,8 @@ def setup_dispatcher(dispatcher: Dispatcher):
     if dp is None:
         raise ValueError("Dispatcher is not set properly")
 
-    # Регистрация обработчика внутри функции установки
-    dp.add_handler(types.MessageHandler(lambda message: message.text.startswith('.id @'), id_command))
+    # Регистрация обработчика
+    dp.add_handler(types.MessageHandler(Text(equals='.id @username', ignore_case=True), id_command))
 
 # Обработчик для команды .id @username
 async def id_command(message: types.Message):
