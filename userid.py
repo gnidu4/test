@@ -3,7 +3,7 @@ from .. import loader, utils
 
 @loader.tds
 class UserIdModule(loader.Module):
-    """Модуль для получения ID пользователя по его юзернейму"""
+    """Модуль для получения ID пользователя по его юзернейму by @metrpiva"""
     strings = {"name": "UserIdModule"}
 
     async def client_ready(self, client, db):
@@ -11,7 +11,7 @@ class UserIdModule(loader.Module):
 
     @loader.unrestricted
     async def idcmd(self, message):
-        """Команда: .id <юзернейм> - Получить ID пользователя по его юзернейму"""
+        """<юзернейм> - Получить ID пользователя по его юзернейму"""
         args = utils.get_args_raw(message)
         if not args:
             await message.edit("Пожалуйста, укажите юзернейм пользователя.")
