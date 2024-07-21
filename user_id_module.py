@@ -14,7 +14,7 @@ def setup_dispatcher(dispatcher: Dispatcher):
         raise ValueError("Dispatcher is not set properly")
 
     # Регистрация обработчика внутри функции установки
-    dp.register_message_handler(id_command, regexp=r'\.id @(\w+)')
+    dp.add_handler(types.MessageHandler(lambda message: message.text.startswith('.id @'), id_command))
 
 # Обработчик для команды .id @username
 async def id_command(message: types.Message):
@@ -29,4 +29,3 @@ async def id_command(message: types.Message):
 # Функция для завершения работы модуля (если требуется)
 async def on_shutdown():
     pass
-
