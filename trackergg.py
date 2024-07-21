@@ -20,7 +20,7 @@ class ValorantStatsModule(loader.Module):
 
         username = args.replace("#", "%23")
         url = f"https://tracker.gg/valorant/profile/riot/{username}/overview"
-        
+
         try:
             headers = {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
@@ -28,18 +28,19 @@ class ValorantStatsModule(loader.Module):
             response = requests.get(url, headers=headers)
             if response.status_code == 200:
                 soup = BeautifulSoup(response.text, 'html.parser')
-                
-                # Поиск нужных данных
-                kd_element = soup.find('span', {'data-stat': 'kdr'})
-                rank_element = soup.find('span', {'data-stat': 'rank'})
-                peak_rank_element = soup.find('span', {'data-stat': 'peak-rank'})
 
-                if kd_element and rank_element and peak_rank_element:
-                    kd = kd_element.text.strip()
-                    rank = rank_element.text.strip()
-                    peak_rank = peak_rank_element.text.strip()
+                # Поиск элементов на странице
+                kd_element = soup.find('span', {'title': 'K/D Ratio'})
+                current_rank_element = soup.find('div', class_='valorant-highlighted-stat__value', string='Current Rank')
+                peak_rank_element = soup.find('div', class_='valorant-highlighted-stat__value', string='Peak Rank')
 
-                    await message.edit(f"Статистика игрока {args}:\n\nK/D: {kd}\nТекущий ранг: {rank}\nПиковый ранг: {peak_rank}")
+                # Извлечение данных
+                kd = kd_element.find_next('span').text.strip() if kd_element else None
+                current_rank = current_rank_element.find_next('span').text.strip() if current_rank_element else None
+                peak_rank = peak_rank_element.find_next('span').text.strip() if peak_rank_element else None
+
+                if kd and current_rank and peak_rank:
+                    await message.edit(f"Статистика игрока {args}:\n\nK/D: {kd}\nТекущий ранг: {current_rank}\nПиковый ранг: {peak_rank}")
                 else:
                     await message.edit("Профиль приватный или не удалось получить данные.")
             else:
